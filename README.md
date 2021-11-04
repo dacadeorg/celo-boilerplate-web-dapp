@@ -1,3 +1,8 @@
+# what is Celo ImageStock?
+
+Celo ImageStock is an open source website for sharing royalty free images. Anyone can upload an image by paying a low gas fee to the Celo network, then, this image is made available to everyone for download. If any user likes the image they may donate a token to the content uploader.
+
+
 # Install
 
 ```
