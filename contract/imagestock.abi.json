@@ -134,6 +134,11 @@
         "internalType": "uint256",
         "name": "_index",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
       }
     ],
     "name": "transferImageOwnership",
