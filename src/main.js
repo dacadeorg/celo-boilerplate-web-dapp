@@ -3,7 +3,7 @@ import { newKitFromWeb3 } from "@celo/contractkit";
 import BigNumber from "bignumber.js";
 import erc20Abi from "../contract/erc20.abi.json";
 import ImageStockAbi from "../contract/imagestock.abi.json";
-require('arrive');
+require("arrive");
 
 const ERC20_DECIMALS = 18;
 const cUSDContractAddress = "0xb053651858F145b3127504C1045a1FEf8976BFfB";
@@ -18,8 +18,7 @@ const connectCeloWallet = async function () {
   if (window.celo) {
     try {
       notification("⚠️ Please approve this DApp to connect to your wallet.");
-      const celo = await window.celo.enable();
-      console.log("celo", celo);
+      await window.celo.enable();
       notificationOff();
       const web3 = new Web3(window.celo);
       kit = newKitFromWeb3(web3);
@@ -64,7 +63,6 @@ document.querySelector("#newImageBtn").addEventListener("click", async (e) => {
     const result = await contract.methods
       .addImage(...params)
       .send({ from: kit.defaultAccount });
-    console.log("launch result", result);
   } catch (error) {
     notification(`⚠️ ${error}.`);
   }
@@ -73,7 +71,9 @@ document.querySelector("#newImageBtn").addEventListener("click", async (e) => {
 });
 
 async function supportImage(index) {
-  const amount = new BigNumber(document.getElementById(`supportAmount${index}`).value)
+  const amount = new BigNumber(
+    document.getElementById(`supportAmount${index}`).value
+  )
     .shiftedBy(ERC20_DECIMALS)
     .toString();
 
@@ -94,8 +94,6 @@ async function supportImage(index) {
       .downloadImage(...params)
       .send({ from: kit.defaultAccount });
 
-    console.log("Support Result:", result);
-
     notification(`🎉 You successfully supported "${images[index].title}".`);
 
     getImages();
@@ -109,7 +107,6 @@ const getImages = async function () {
   const _imageCount = await contract.methods.getImageCount().call();
   const _images = [];
 
-  console.log("Images: " + _imageCount);
   for (let i = 0; i < _imageCount; i++) {
     let _image = new Promise(async (resolve, reject) => {
       let image = await contract.methods.fetchImage(i).call();
@@ -137,7 +134,6 @@ const getImages = async function () {
 function renderImages() {
   document.getElementById("imageList").innerHTML = "";
 
-  console.log(images);
   images.forEach((_image) => {
     const newDiv = document.createElement("div");
     newDiv.className = "col-md-4";
@@ -150,7 +146,6 @@ function renderImages() {
 }
 
 function notification(_text) {
-  console.log(_text);
   document.querySelector(".alert").style.display = "block";
   document.querySelector("#notification").textContent = _text;
 }
@@ -202,36 +197,25 @@ function imageTemplate(_image) {
     </div>
   `;
 }
- 
 
 let hasArrived = false;
 
 window.addEventListener("load", async () => {
   document.arrive(".imageTemplates", () => {
-    
-    if(!hasArrived) {
+    if (!hasArrived) {
+      hasArrived = true;
 
-      hasArrived = true
+      const supportBtns = document.querySelectorAll("button.supportBtn");
 
-      const supportBtns = document.querySelectorAll('button.supportBtn')
-      
       supportBtns.forEach((supportBtn) => {
+        supportBtn.addEventListener("click", async () => {
+          const index = supportBtn.getAttribute("index-value");
 
-      supportBtn.addEventListener('click', async () => {
-
-        const index = supportBtn.getAttribute('index-value')
-
-        console.log(index)
-
-        await supportImage(parseInt(index));
-
-      })
-      
-    })
+          await supportImage(parseInt(index));
+        });
+      });
     }
-
   });
- 
 });
 
 function supportModal(_index) {
