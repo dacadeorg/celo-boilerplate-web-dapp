@@ -256,9 +256,10 @@ contract ImageStock {
 
     }
     
-     function transferImageOwnership(uint _index) onlyOwner(_index) public {
+     function transferImageOwnership(uint _index, address _newOwner) onlyOwner(_index) public {
+         require(_newOwner != address(0), "new owner cannot be the zero address");
 
-        images[_index].author = payable(msg.sender); 
+        images[_index].author = payable(_newOwner); 
 
     }
 }
