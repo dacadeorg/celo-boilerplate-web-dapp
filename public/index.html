@@ -68,7 +68,15 @@
           margin: 0;
           padding: 5px;
           background-color: lightgray;
-}
+        }
+        
+        .search{
+          background-color: lightgray ;
+          border-radius: 0;
+          padding: 5px;
+        }
+
+      
       }
     </style>
 
@@ -77,22 +85,28 @@
 
   <body>
     <div class="container mt-2" style="max-width: 100em">
-
+      <!--TopBar Start-->
       <nav class="navbar navbar-custom">
-        <img class="ico" src="https://mms.businesswire.com/media/20210921006104/en/908582/2/Celo_Logo.jpg">
         <div class="container-fluid">
           <span class="navbar-brand m-0 h4 fw-bold">Celo Test Market</span>
           <span class="nav-link border rounded-pill bg-light">
-            <span id="balance">0.0</span>
-            cUSD
+            <span id="balance">0</span>
+            cUSD  
           </span>
         </div>
       </nav>
+    <!--TopBar End-->
 
+    <!--Search Bar-->
+    <div class="search">
+      <input id="searchBar" type="text" placeholder="Search..">
+      <button id="searchButton">Search</button>
+    </div> 
+    <!--Search Bar End-->
       <div class="alert alert-warning sticky-top mt-2" role="alert">
         <span id="notification">⌛ Loading...</span>
       </div>
-  
+    
       <div class="mb-4" style="margin-top: 4em">
         <a
           class="btn btn-dark rounded-pill"
@@ -166,6 +180,14 @@
                     id="newPrice"
                     class="form-control mb-2"
                     placeholder="Enter price"
+                  />
+                </div>
+                <div class="col">
+                  <input
+                    type="text"
+                    id="newQuantity"
+                    class="form-control mb-2"
+                    placeholder="Enter Quantity"
                   />
                 </div>
               </div>

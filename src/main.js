@@ -4,7 +4,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x65881e7657f4E60681C12F9197389D2174B5F0a0"
+const MPContractAddress = "0xf9Eaf13128C9ec5c57b02e70837d7DE5e4c7D085"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 let contract
 let web3
@@ -65,6 +65,7 @@ const getProducts = async function() {
   for (let i = 0; i < _productsLength; i++) {
     let _product = new Promise(async (resolve, reject) => {
       let p = await contract.methods.readProduct(i).call()
+      let logistics = await contract.methods.getLogistics(i).call()
       resolve({
         index: i,
         OId: p[0],
@@ -72,8 +73,9 @@ const getProducts = async function() {
         image: p[2],
         description: p[3],
         location: p[4],
-        price: new BigNumber(p[5]),
-        sold: p[6],
+        price: new BigNumber(logistics[0]),
+        sold: logistics[1],
+        quantity: logistics[2]
       })
     })
     _products.push(_product)
@@ -85,17 +87,21 @@ const getProducts = async function() {
 function renderProducts() {
   document.getElementById("marketplace").innerHTML = ""
   products.forEach((_product) => {
+    if(_product.quantity!=0 ){
     const newDiv = document.createElement("div")
     newDiv.className = "col-md-4"
     newDiv.innerHTML = productTemplate(_product)
     document.getElementById("marketplace").appendChild(newDiv)
-  })
+  }})
 }
 
 function productTemplate(_product) {
   return `
     <div class="card mb-4">
       <img class="card-img-top" src="${_product.image}" alt="...">
+      <div class="position-absolute top-1 end-1 bg-warning mt-4 px-2 py-1 rounded-start">
+        ${_product.quantity} Remaining
+      </div>
       <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
         ${_product.sold} Sold
       </div>
@@ -151,6 +157,17 @@ function notificationOff() {
   document.querySelector(".alert").style.display = "none"
 }
 
+function renderSearch(_search){
+  
+  document.getElementById("marketplace").innerHTML = ""
+  products.forEach((_product) => {
+    if (_product.title== _search || _product.description.includes(_search)){
+    const newDiv = document.createElement("div")
+    newDiv.className = "col-md-4"
+    newDiv.innerHTML = productTemplate(_product)
+    document.getElementById("marketplace").appendChild(newDiv)}
+  })
+}
 window.addEventListener("load", async () => {
   notification("⌛ Loading...")
   await connectMetaWallet()
@@ -169,12 +186,13 @@ document
       document.getElementById("newLocation").value,
       new BigNumber(document.getElementById("newPrice").value)
       .shiftedBy(ERC20_DECIMALS)
-      .toString()
+      .toString(),
+      new BigNumber(document.getElementById(newQuantity)).toString(),
     ]
     notification(`⌛ Adding "${params[0]}"...`)
     try {
       const result = await contract.methods
-        .writeProduct(params[0],params[1],params[2],params[3],params[4])
+        .writeProduct(params[0],params[1],params[2],params[3],params[4],params[5])
         .send({ from: Account0 })
     } catch (error) {
       notification(`⚠️ ${error}.`)
@@ -210,132 +228,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
   }
 })  
 
-(function ($) {
-  "use strict";
-  
-  // Dropdown on mouse hover
-  $(document).ready(function () {
-      function toggleNavbarMethod() {
-          if ($(window).width() > 992) {
-              $('.navbar .dropdown').on('mouseover', function () {
-                  $('.dropdown-toggle', this).trigger('click');
-              }).on('mouseout', function () {
-                  $('.dropdown-toggle', this).trigger('click').blur();
-              });
-          } else {
-              $('.navbar .dropdown').off('mouseover').off('mouseout');
-          }
-      }
-      toggleNavbarMethod();
-      $(window).resize(toggleNavbarMethod);
-  });
-
-
-  // Date and time picker
-  $('.date').datetimepicker({
-      format: 'L'
-  });
-  $('.time').datetimepicker({
-      format: 'LT'
-  });
-  
-  
-  // Back to top button
-  $(window).scroll(function () {
-      if ($(this).scrollTop() > 100) {
-          $('.back-to-top').fadeIn('slow');
-      } else {
-          $('.back-to-top').fadeOut('slow');
-      }
-  });
-  $('.back-to-top').click(function () {
-      $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
-      return false;
-  });
-
-
-  // Team carousel
-  $(".team-carousel, .related-carousel").owlCarousel({
-      autoplay: true,
-      smartSpeed: 1000,
-      center: true,
-      margin: 30,
-      dots: false,
-      loop: true,
-      nav : true,
-      navText : [
-          '<i class="fa fa-angle-left" aria-hidden="true"></i>',
-          '<i class="fa fa-angle-right" aria-hidden="true"></i>'
-      ],
-      responsive: {
-          0:{
-              items:1
-          },
-          576:{
-              items:1
-          },
-          768:{
-              items:2
-          },
-          992:{
-              items:3
-          }
-      }
-  });
-
-
-  // Testimonials carousel
-  $(".testimonial-carousel").owlCarousel({
-      autoplay: true,
-      smartSpeed: 1500,
-      margin: 30,
-      dots: true,
-      loop: true,
-      center: true,
-      responsive: {
-          0:{
-              items:1
-          },
-          576:{
-              items:1
-          },
-          768:{
-              items:2
-          },
-          992:{
-              items:3
-          }
-      }
-  });
-
-
-  // Vendor carousel
-  $('.vendor-carousel').owlCarousel({
-      loop: true,
-      margin: 30,
-      dots: true,
-      loop: true,
-      center: true,
-      autoplay: true,
-      smartSpeed: 1000,
-      responsive: {
-          0:{
-              items:2
-          },
-          576:{
-              items:3
-          },
-          768:{
-              items:4
-          },
-          992:{
-              items:5
-          },
-          1200:{
-              items:6
-          }
-      }
-  });
-  
-})(jQuery);
-
+document.querySelector("#searchButton").addEventListener("click", async(e)=>{
+  const SearchTerm =   document.getElementById("searchBar").value;
+  renderSearch(SearchTerm);
+})
