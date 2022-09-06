@@ -187,7 +187,7 @@ document
       new BigNumber(document.getElementById("newPrice").value)
       .shiftedBy(ERC20_DECIMALS)
       .toString(),
-      new BigNumber(document.getElementById(newQuantity)).toString(),
+      new BigNumber(document.getElementById("newQuantity").value).toString(),
     ]
     notification(`⌛ Adding "${params[0]}"...`)
     try {
@@ -195,6 +195,7 @@ document
         .writeProduct(params[0],params[1],params[2],params[3],params[4],params[5])
         .send({ from: Account0 })
     } catch (error) {
+      console.log(error)
       notification(`⚠️ ${error}.`)
     }
     notification(`🎉 You successfully added "${params[0]}".`)
