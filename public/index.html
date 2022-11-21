@@ -5,55 +5,286 @@
   <!-- Required meta tags -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" type="text/css" href="style.css" />
+
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+  crossorigin="anonymous"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css"
+/>
+<link rel="stylesheet" type="text/css" href="../src/style.scss" />
   <title>Chat room</title>
 
+  <style>
+    * {
+    margin:0px;
+    padding:0px;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"roboto", Times, serif;
+    height:100vh;
+    display: flex;
+    justify-content: center;    
+}
+
+.app{
+    position: fixed;
+    width:100%;
+    height: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-left:1px solid #eee;
+    border-right:1px solid #eee;
+}
+.app >.screen{
+    display:none;
+}
+.app > .screen.active{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+.screen .form {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+}
+.screen h2{
+    margin-bottom: 20px;
+    font-size: 30px;
+    color:#111;
+    border-bottom:4px solid #555;
+    padding: 5px 0px;
+    display: inline-block;
+}
+
+.screen .form-input label {
+    display: block;
+    margin-bottom: 5px;
+
+}.screen .form-input input {
+    width:100%;
+    padding:10px;
+    border: 1px solid #555;
+    font-size:16px;
+}
+.screen .form-input button{
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #111;
+    color:#eee;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    border: none;
+} 
+
+
+.chat-screen .header{
+    background: #111;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.chat-screen .header .logo{
+    font-size: 18px;
+    color:#eee;
+    font-weight:  600;
+}
+
+.chat-screen .header button{
+    padding:5px 10px;
+    border: 1px solid #eee;
+    background: transparent;
+    color:#eee;
+    font-size:15px;
+    cursor:pointer;
+    outline: none;
+}
+
+.chat-screen .messages{
+    width: 100%;
+    height: calc(100% - 100px);
+    background:#f5f5f5;
+    overflow:auto;
+}
+.chat-screen .messages .message{
+    display: flexbox;
+    padding: 10px;
+    flex-direction: column-reverse;
+    }
+
+.chat-screen .messages .message .container {
+    max-width: 80%;
+    background: #fff;
+    box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.05);
+    padding: 10px;
+}
+
+.chat-screen .messages .message.my-message {
+    justify-content: flex-end;
+} 
+
+.chat-screen .messages .message.other-message{
+    justify-content: flex-start;
+}
+.chat-screen .messages .message .name{
+    font-size:13px;
+    color:#555;
+    margin-bottom:5px;
+    }
+.chat-screen .messages .message .date{
+    font-size:13px;
+    color:#555;
+    padding-top: 10px;
+    margin-bottom:5px;
+    
+    }
+.chat-screen .messages .message .rating p{
+    font-size:13px;
+    color:#555;
+    margin-bottom:5px;
+    }
+
+.chat-screen .messages .message text{
+    word-wrap: break-word;
+}
+/* .chat-screen .messages .message .button{
+    padding:5px 10px;
+    border: 1px solid #eee;
+    background: transparent;
+    color:#eee;
+    font-size:15px;
+    cursor:pointer;
+    outline: none;
+} */
+
+.chat-screen .message .update{
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+}
+
+.chat-screen .typebox{
+    width:100%;
+    height: 50px;
+    display: flex;
+}
+.chat-screen .typebox input{
+    flex:1;
+    height: 50px;
+    font-size: 18px;
+    
+}
+
+.chat-screen .typebox button{
+    width: 80px;
+    height: 100%;
+    background: #111;
+    color: #eee;
+    font-size:16px;
+    margin-top: 10px;
+    outline:none;
+    border: none;
+}
+
+.hidden{
+  visibility: hidden;
+	pointer-events: none;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+  </style>
 </head>
 
 <body>
   <div class="app">
-    <div class="screen join-screen ">
+    <div class="screen join-screen active">
       <div class="form">
         <h2> join the chatroom</h2>
         <div class="form-input">
           <label>Username</label>
-          <input type="text" id="username">
+          <input type="text" id="username" placeholder="UserName">
         </div>
         <div class="form-input">
           <button id="join-user">Join</button>
         </div>
       </div>
     </div>
-    <div class="screen chat-screen active">
+    <div class="screen chat-screen">
       <div class="header">
-        <div class="logo">Classroom</div>
-        <button id="exit-chat">Exit</button>
+        <div class="logo" id ="userdisplay"></div>
+        <div class="logo">ChatRoom</div>
+        <button onclick="location.reload()">Exit</button>    
       </div>
-
-      <div class="messages">
-        <div class="message my-message">
-          <div class="container">
-            <div class="name">your</div>
-            <div class="text">Hi</div>
-          </div>
-          <div class="update">
-            Abc is joined the conversation
-          </div>
-          <div class="message other-message">
-            <div class="container">
-              <div class="name">Abc</div>
-              <div class="text">Hi</div>
-            </div>
-          </div>
-        </div>
+      <div class="alert alert-warning sticky-top mt-2" role="alert" style="margin-bottom:10px ;">
+        <span id="notification">⌛ Loading...</span>
+        <button style="float: right;" class ="btn btn-dark rounded-pill rate btn" onclick= "document.querySelector('.alert').style.display = 'none';"> close</button>
       </div>
+      <div id="messagecard" class="messages">
+      </div>
+      
       <div class="typebox">
-        <input type="text" id="message-input">
+        <input type="text" id="message-input" placeholder="Enter text">
         <button id="send-message">send</button>
       </div>
     </div>
 
-    <script type="text/javascript" src="main.js"></script>
+      <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <script type="text/javascript" src="main.js"></script>
 </body>
 
 </html>
