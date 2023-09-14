@@ -1,16 +1,16 @@
 {
   "main": "index.js",
   "dependencies": {
-    "@celo/contractkit": "^1.0.2",
-    "bignumber.js": "^9.0.1"
+    "@celo/contractkit": "^4.1.0",
+    "bignumber.js": "^9.1.1"
   },
   "devDependencies": {
-    "html-webpack-plugin": "3.2.0",
-    "webpack": "4.29.6",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.11.2",
-    "friendly-errors-webpack-plugin": "1.7.0"
-  },
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^4.5.2",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.1"
+  }
   "scripts": {
     "dev": "node index.js",
     "build": "webpack"
